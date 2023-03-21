@@ -1,0 +1,38 @@
+stages:
+  # - test
+  - build
+  - deploy
+
+variables:
+  IMAGE_NAME: ops_docker
+    
+# test:
+#   stage: test
+#   image: node:latest
+#   script:
+#     - env
+#     - npm install
+
+build:
+  stage: package
+  image: docker:latest
+  services:
+    - docker:dind
+  stage: build
+  script:
+    - ls -al
+    - docker container ls -a
+    - docker build -t $IMAGE_NAME .
+    - docker push $IMAGE_NAME
+    - docker images | grep '<IP>'
+
+deploy:
+  stage: deploy
+  image: docker:latest
+  services:
+    - docker:dind
+  script:
+    - docker container ls -a
+    - docker container rm -f $IMAGE_NAME
+    - docker run -d -p 8001:8001 --name docker-proj --restart always $IMAGE_NAME
+    - docker container ls -a
