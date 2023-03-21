@@ -16,7 +16,8 @@ build:
   image: docker:latest
   services:
     - name: docker:dind
-      alias: dockerdaemon  
+      alias: dockerdaemon
+      command: ["--tls=false"]
   variables:
     # Tell docker CLI how to talk to Docker daemon.
     DOCKER_HOST: tcp://dockerdaemon:2375/
@@ -35,8 +36,10 @@ build:
 deploy:
   stage: deploy
   image: docker:latest
+  services:
     - name: docker:dind
       alias: dockerdaemon  
+      command: ["--tls=false"]
   variables:
     # Tell docker CLI how to talk to Docker daemon.
     DOCKER_HOST: tcp://dockerdaemon:2375/
