@@ -20,7 +20,7 @@ build:
   #   - docker:dind
   stage: build
   script:
-    - ls -al
+    # - ls -al
     - docker container ls -a
     - docker build -t $IMAGE_NAME .
     - docker push $IMAGE_NAME
