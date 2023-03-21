@@ -16,7 +16,6 @@ build:
   image: docker:latest
   services:
     - name: docker:dind
-      command: ["--tls=false"]
       alias: dockerdaemon  
   variables:
     # Tell docker CLI how to talk to Docker daemon.
@@ -37,7 +36,6 @@ deploy:
   stage: deploy
   image: docker:latest
     - name: docker:dind
-      command: ["--tls=false"]
       alias: dockerdaemon  
   variables:
     # Tell docker CLI how to talk to Docker daemon.
