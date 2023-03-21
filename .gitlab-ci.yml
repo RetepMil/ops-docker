@@ -14,10 +14,10 @@ variables:
 #     - npm install
 
 build:
-  stage: package
-  image: docker:latest
-  services:
-    - docker:dind
+  # stage: package
+  # image: docker:latest
+  # services:
+  #   - docker:dind
   stage: build
   script:
     - ls -al
