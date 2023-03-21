@@ -1,5 +1,5 @@
 stages:
-  # - test
+  - test
   - build
   - deploy
 
@@ -8,29 +8,28 @@ variables:
     
 test:
   stage: test
-  # image: node:latest
   script:
     - echo "TEST"
 
 build:
-  # stage: package
-  # image: docker:latest
-  # services:
-  #   - docker:dind
   stage: build
+  image: docker:latest
+  services:
+    - docker:dind
   script:
     - ls -al
-    # - docker container ls -a
+    - docker container ls -a
     - docker build -t $IMAGE_NAME .
     - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker push $IMAGE_NAME
-    # - docker images | grep '<IP>'
+    - docker images
 
 deploy:
   stage: deploy
   image: docker:latest
   services:
-    - docker:dind
+    - name: docker:dind
+    - command: ["--tls=false"]
   script:
     - docker container ls -a
     - docker container rm -f $IMAGE_NAME
