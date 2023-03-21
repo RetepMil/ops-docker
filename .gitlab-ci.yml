@@ -6,12 +6,11 @@ stages:
 variables:
   IMAGE_NAME: ops_docker
     
-# test:
-#   stage: test
-#   image: node:latest
-#   script:
-#     - env
-#     - npm install
+test:
+  stage: test
+  # image: node:latest
+  script:
+    - echo "TEST"
 
 build:
   # stage: package
@@ -20,11 +19,12 @@ build:
   #   - docker:dind
   stage: build
   script:
-    # - ls -al
-    - docker container ls -a
+    - ls -al
+    # - docker container ls -a
     - docker build -t $IMAGE_NAME .
+    - docker login -u $DOCKER_USER -p $DOCKER_PASSWORD
     - docker push $IMAGE_NAME
-    - docker images | grep '<IP>'
+    # - docker images | grep '<IP>'
 
 deploy:
   stage: deploy
