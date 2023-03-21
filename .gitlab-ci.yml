@@ -29,7 +29,7 @@ deploy:
   image: docker:latest
   services:
     - name: docker:dind
-    - command: ["--tls=false"]
+      command: ["--tls=false"]
   script:
     - docker container ls -a
     - docker container rm -f $IMAGE_NAME
