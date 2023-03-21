@@ -13,11 +13,10 @@ test:
     - echo "TEST"
 
 build:
-  # stage: package
-  # image: docker:latest
-  # services:
-  #   - docker:dind
   stage: build
+  image: docker:latest
+  services:
+    - docker:dind
   script:
     - ls -al
     # - docker container ls -a
