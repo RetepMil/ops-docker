@@ -15,7 +15,16 @@ build:
   stage: build
   image: docker:latest
   services:
-    - docker:dind
+    - name: docker:dind
+      command: ["--tls=false"]
+      alias: dockerdaemon  
+  variables:
+    # Tell docker CLI how to talk to Docker daemon.
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    # Use the overlayfs driver for improved performance.
+    DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
   script:
     - ls -al
     - docker container ls -a
@@ -27,9 +36,16 @@ build:
 deploy:
   stage: deploy
   image: docker:latest
-  services:
     - name: docker:dind
       command: ["--tls=false"]
+      alias: dockerdaemon  
+  variables:
+    # Tell docker CLI how to talk to Docker daemon.
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    # Use the overlayfs driver for improved performance.
+    DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
   script:
     - docker container ls -a
     - docker container rm -f $IMAGE_NAME
