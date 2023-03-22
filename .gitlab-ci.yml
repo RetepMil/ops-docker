@@ -32,7 +32,7 @@ build:
     - ls -al
     - docker container ls -a
     - docker build -t $IMAGE_NAME .
-    - docker login --username $DOCKER_USER --password-stdin $DOCKER_PASSWORD
+    - docker login --username $DOCKER_USERNAME --password-stdin $DOCKER_PASSWORD
     - docker push $IMAGE_NAME
     - docker images
 
