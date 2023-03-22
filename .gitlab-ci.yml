@@ -1,7 +1,7 @@
 stages:
-  # - test
   # - lint
   - build
+  # - test
   - build-image
   - deploy
 
@@ -14,15 +14,11 @@ variables:
 #   script:
 #     - echo "TEST"
 
-cache:
-  paths:
-    - target/
-
 build:
   stage: build
   tags:
     - dockerrunner
-  image: docker:latest
+  image: openjdk:17
   services:
     - name: docker:dind
       alias: dockerdaemon
@@ -35,6 +31,14 @@ build:
     - ./mvnw clean package
     - cd /target
     - ls -al
+  artifacts:
+    paths:
+      - target/*.jar
+    
+# test:
+#   stage: test
+#   script:
+#     - echo "TEST"
 
 build-image:
   stage: build-image
