@@ -33,7 +33,8 @@ build:
     - ls -al
   artifacts:
     paths:
-      - /target/*.jar
+      - target/*.jar
+    when: on_success
     
 # test:
 #   stage: test
