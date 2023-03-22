@@ -29,11 +29,11 @@ build:
     DOCKER_TLS_CERTDIR: "" # Disable TLS since we're running inside local network.
   script:
     - ./mvnw clean package
-    - cd /target
+    - cd ./target
     - ls -al
   artifacts:
     paths:
-      - ./target/*.jar
+      - /target/*.jar
     
 # test:
 #   stage: test
