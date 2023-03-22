@@ -1,8 +1,8 @@
 FROM openjdk:17
 
-COPY . /app
-
 WORKDIR /app
+
+COPY . /app
 
 CMD ["./mvnw", "clean", "package"]
 
