@@ -1,15 +1,15 @@
 stages:
-  - test
+  # - test
   - build
   - deploy
 
 variables:
   IMAGE_NAME: lkslyj2/ops_docker
     
-test:
-  stage: test
-  script:
-    - echo "TEST"
+# test:
+#   stage: test
+#   script:
+#     - echo "TEST"
 
 build:
   stage: build
@@ -33,7 +33,7 @@ build:
     - docker push $IMAGE_NAME
     - docker images
 
-deploy:
+deploy-dev:
   stage: deploy
   image: docker:latest
   services:
@@ -47,8 +47,36 @@ deploy:
     DOCKER_DRIVER: overlay2
     # Disable TLS since we're running inside local network.
     DOCKER_TLS_CERTDIR: ""
+    DEPLOY_PORT: "8001"
+    MESSAGE: "DEV"
   script:
     - docker container ls -a
     - docker container rm -f $IMAGE_NAME
-    - docker run -d -p 8001:8001 --name docker-proj --restart always $IMAGE_NAME
+    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
     - docker container ls -a
+  only:
+    - develop
+
+deploy-prod:
+  stage: deploy
+  image: docker:latest
+  services:
+    - name: docker:dind
+      alias: dockerdaemon  
+      command: ["--tls=false"]
+  variables:
+    # Tell docker CLI how to talk to Docker daemon.
+    DOCKER_HOST: tcp://dockerdaemon:2375/
+    # Use the overlayfs driver for improved performance.
+    DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
+    DEPLOY_PORT: "8002"
+    MESSAGE: "PROD"
+  script:
+    - docker container ls -a
+    - docker container rm -f $IMAGE_NAME
+    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
+    - docker container ls -a
+  only:
+    - main
