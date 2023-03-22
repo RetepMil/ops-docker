@@ -61,8 +61,8 @@ deploy-dev:
   script:
     - export SERVER_MESSAGE="$MESSAGE"
     - docker container ls -a
-    - docker stop docker-proj
-    - docker container rm docker-proj
+    # - docker stop docker-proj
+    # - docker container rm docker-proj
     - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
     - docker container ls -a
   only:
@@ -77,7 +77,7 @@ deploy-prod:
     MESSAGE: "PROD"
   script:
     - export SERVER_MESSAGE="$MESSAGE"
-    - docker container ls -a
+    - docker container ls -a\
     - docker stop docker-proj
     - docker container rm docker-proj
     - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
