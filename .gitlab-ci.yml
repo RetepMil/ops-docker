@@ -61,6 +61,8 @@ deploy-dev:
 
 deploy-prod:
   stage: deploy
+  tags:
+    - shellrunner
   variables:
     DEPLOY_PORT: "8002"
     MESSAGE: "PROD"
