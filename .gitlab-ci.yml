@@ -23,6 +23,8 @@ build:
     DOCKER_HOST: tcp://dockerdaemon:2375/
     # Use the overlayfs driver for improved performance.
     DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
   script:
     - ls -al
     - docker container ls -a
@@ -43,6 +45,8 @@ deploy:
     DOCKER_HOST: tcp://dockerdaemon:2375/
     # Use the overlayfs driver for improved performance.
     DOCKER_DRIVER: overlay2
+    # Disable TLS since we're running inside local network.
+    DOCKER_TLS_CERTDIR: ""
   script:
     - docker container ls -a
     - docker container rm -f $IMAGE_NAME
