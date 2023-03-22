@@ -56,9 +56,9 @@ build-image:
     DOCKER_TLS_CERTDIR: ""
   script:
     - ls -al
-    - docker build -t $IMAGE_NAME .
+    - docker build -t $IMAGE_NAME:test .
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-    - docker push $IMAGE_NAME:test
+    - docker push $IMAGE_NAME
     - docker images
   only:
     - develop
