@@ -37,6 +37,9 @@ build-image:
     - ls -al
     - docker container ls -a
     - docker build -t $IMAGE_NAME .
+    - ls -al
+    - cd target
+    - ls -al
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
     - docker push $IMAGE_NAME
     - docker images
