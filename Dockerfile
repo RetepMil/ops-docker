@@ -1,6 +1,5 @@
-FROM openjdk:17
-
-CMD ["./mvnw", "clean", "package"]
+# FROM openjdk:17
+FROM maven:3-openjdk-17
 
 ARG JAR_FILE=*.jar
 

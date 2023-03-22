@@ -1,7 +1,7 @@
 stages:
   # - test
   # - lint
-  # - build 
+  - build
   - build-image
   - deploy
 
@@ -14,8 +14,27 @@ variables:
 #   script:
 #     - echo "TEST"
 
-# build:
-#   stage: build
+cache:
+  paths:
+    - target/
+
+build:
+  stage: build
+  tags:
+    - dockerrunner
+  image: docker:latest
+  services:
+    - name: docker:dind
+      alias: dockerdaemon
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://dockerdaemon:2375/ # Tell docker CLI how to talk to Docker daemon.
+    DOCKER_DRIVER: overlay2 # Use the overlayfs driver for improved performance.
+    DOCKER_TLS_CERTDIR: "" # Disable TLS since we're running inside local network.
+  script:
+    - ./mvnw clean package
+    - cd /target
+    - ls -al
 
 build-image:
   stage: build-image
@@ -27,19 +46,12 @@ build-image:
       alias: dockerdaemon
       command: ["--tls=false"]
   variables:
-    # Tell docker CLI how to talk to Docker daemon.
     DOCKER_HOST: tcp://dockerdaemon:2375/
-    # Use the overlayfs driver for improved performance.
     DOCKER_DRIVER: overlay2
-    # Disable TLS since we're running inside local network.
     DOCKER_TLS_CERTDIR: ""
   script:
     - ls -al
-    - docker container ls -a
     - docker build -t $IMAGE_NAME .
-    - ls -al
-    - cd target
-    - ls -al
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
     - docker push $IMAGE_NAME
     - docker images
