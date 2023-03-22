@@ -1,16 +1,12 @@
 FROM openjdk:17
 
-WORKDIR /app
-
-COPY . /app
-
 CMD ["./mvnw", "clean", "package"]
 
-ARG JAR_FILE_PATH=target/*.jar
+ARG JAR_FILE=*.jar
 
-# COPY ${JAR_FILE_PATH} /app/app.jar
+COPY ${JAR_FILE} app.jar
 
-ENTRYPOINT ["java", "-jar", "./target/ops_docker_proj-0.0.1-SNAPSHOT.jar"]
+ENTRYPOINT ["java", "-jar", "/app.jar"]
 
 EXPOSE 8001
 EXPOSE 8002
