@@ -28,6 +28,7 @@ build:
     DOCKER_DRIVER: overlay2 # Use the overlayfs driver for improved performance.
     DOCKER_TLS_CERTDIR: "" # Disable TLS since we're running inside local network.
   script:
+    - echo 'STARTING JAVA SPRING APPLICATION BUILDING...'
     - ./mvnw clean package
     - cd ./target
     - ls -al
