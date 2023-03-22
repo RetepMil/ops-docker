@@ -58,7 +58,7 @@ build-image:
     - ls -al
     - docker build -t $IMAGE_NAME:test .
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-    - docker push $IMAGE_NAME
+    - docker push $IMAGE_NAME:test
     - docker images
   only:
     - develop
