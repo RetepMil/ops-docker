@@ -2,7 +2,7 @@ stages:
   # - test
   # - lint
   # - build 
-  - build
+  - build-image
   - deploy
 
 variables:
@@ -14,8 +14,11 @@ variables:
 #   script:
 #     - echo "TEST"
 
-build:
-  stage: build
+# build:
+#   stage: build
+
+build-image:
+  stage: build-image
   tags:
     - dockerrunner
   image: docker:latest
