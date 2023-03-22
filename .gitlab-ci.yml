@@ -1,6 +1,7 @@
 stages:
   # - test
   # - lint
+  # - build 
   - build
   - deploy
 
@@ -61,7 +62,7 @@ deploy-dev:
     - export SERVER_MESSAGE="$MESSAGE"
     - docker container ls -a
     - docker stop docker-proj
-    - docker container rm -f $IMAGE_NAME
+    - docker container rm docker-proj
     - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
     - docker container ls -a
   only:
@@ -78,7 +79,7 @@ deploy-prod:
     - export SERVER_MESSAGE="$MESSAGE"
     - docker container ls -a
     - docker stop docker-proj
-    - docker container rm -f $IMAGE_NAME
+    - docker container rm docker-proj
     - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
     - docker container ls -a
   only:
