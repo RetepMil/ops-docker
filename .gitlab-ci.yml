@@ -1,11 +1,13 @@
 stages:
-  # - test
   # - lint
   - build
+  # - test
+  - build-image
   - deploy
 
 variables:
   IMAGE_NAME: lkslyj2/ops_docker
+  CONTRAINER_NAME: docker-proj
     
 # test:
 #   stage: test
@@ -16,24 +18,48 @@ build:
   stage: build
   tags:
     - dockerrunner
+  image: openjdk:17
+  services:
+    - name: docker:dind
+      alias: dockerdaemon
+      command: ["--tls=false"]
+  variables:
+    DOCKER_HOST: tcp://dockerdaemon:2375/ # Tell docker CLI how to talk to Docker daemon.
+    DOCKER_DRIVER: overlay2 # Use the overlayfs driver for improved performance.
+    DOCKER_TLS_CERTDIR: "" # Disable TLS since we're running inside local network.
+  script:
+    - echo 'STARTING JAVA SPRING APPLICATION BUILDING...'
+    - ./mvnw clean package
+    - cd ./target
+    - ls -al
+  artifacts:
+    paths:
+      - target/*.jar
+    when: on_success
+    
+# test:
+#   stage: test
+#   script:
+#     - echo "TEST"
+
+build-image:
+  stage: build-image
+  tags:
+    - dockerrunner
   image: docker:latest
   services:
     - name: docker:dind
       alias: dockerdaemon
       command: ["--tls=false"]
   variables:
-    # Tell docker CLI how to talk to Docker daemon.
     DOCKER_HOST: tcp://dockerdaemon:2375/
-    # Use the overlayfs driver for improved performance.
     DOCKER_DRIVER: overlay2
-    # Disable TLS since we're running inside local network.
     DOCKER_TLS_CERTDIR: ""
   script:
     - ls -al
-    - docker container ls -a
-    - docker build -t $IMAGE_NAME .
+    - docker build -t $IMAGE_NAME:latest .
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
-    - docker push $IMAGE_NAME
+    - docker push $IMAGE_NAME:latest
     - docker images
   only:
     - develop
@@ -42,27 +68,16 @@ build:
 deploy-dev:
   stage: deploy
   tags:
-    - dockerrunner
-  image: docker:latest
-  services:
-    - name: docker:dind
-      alias: dockerdaemon  
-      command: ["--tls=false"]
+    - shellrunner
   variables:
-    # Tell docker CLI how to talk to Docker daemon.
-    DOCKER_HOST: tcp://dockerdaemon:2375/
-    # Use the overlayfs driver for improved performance.
-    DOCKER_DRIVER: overlay2
-    # Disable TLS since we're running inside local network.
-    DOCKER_TLS_CERTDIR: ""
     DEPLOY_PORT: "8001"
-    MESSAGE: "DEV"
+    MESSAGE: "PROD"
   script:
     - export SERVER_MESSAGE="$MESSAGE"
+    - docker rmi -f $IMAGE_NAME || true
     - docker container ls -a
-    - docker stop docker-proj
-    - docker container rm -f $IMAGE_NAME
-    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
+    - docker rm -f $CONTRAINER_NAME-dev || true
+    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name $CONTRAINER_NAME-dev --restart always $IMAGE_NAME:latest
     - docker container ls -a
   only:
     - develop
@@ -76,10 +91,10 @@ deploy-prod:
     MESSAGE: "PROD"
   script:
     - export SERVER_MESSAGE="$MESSAGE"
+    - docker rmi -f $IMAGE_NAME || true
     - docker container ls -a
-    - docker stop docker-proj
-    - docker container rm -f $IMAGE_NAME
-    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name docker-proj --restart always $IMAGE_NAME
+    - docker rm -f $CONTRAINER_NAME-prod || true
+    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name $CONTRAINER_NAME-prod --restart always $IMAGE_NAME:latest
     - docker container ls -a
   only:
     - main
