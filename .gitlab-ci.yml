@@ -77,7 +77,7 @@ deploy-dev:
     - docker rmi -f $IMAGE_NAME || true
     - docker container ls -a
     - docker rm -f $CONTRAINER_NAME-dev || true
-    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name $CONTRAINER_NAME-dev --restart always $IMAGE_NAME:latest
+    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name $CONTRAINER_NAME-dev --restart always $IMAGE_NAME:latest --build-arg DEPLOY_PORT=$DEPLOY_PORT --build-arg MESSAGE=$MESSAGE
     - docker container ls -a
   only:
     - develop
@@ -94,7 +94,7 @@ deploy-prod:
     - docker rmi -f $IMAGE_NAME || true
     - docker container ls -a
     - docker rm -f $CONTRAINER_NAME-prod || true
-    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name $CONTRAINER_NAME-prod --restart always $IMAGE_NAME:latest
+    - docker run -d -p $DEPLOY_PORT:$DEPLOY_PORT --name $CONTRAINER_NAME-prod --restart always $IMAGE_NAME:latest --build-arg DEPLOY_PORT=$DEPLOY_PORT --build-arg MESSAGE=$MESSAGE
     - docker container ls -a
   only:
     - main
