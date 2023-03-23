@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HelloController {
-	@Value("${external.server.port}")
+	@Value("${server.port}")
     private Integer serverPort;
 
-	@Value("${external.message}")
+	@Value("${message}")
     private String message;
 
 	@GetMapping("/hello")
