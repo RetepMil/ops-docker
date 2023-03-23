@@ -7,7 +7,7 @@ ARG MESSAGE
 COPY ${JAR_FILE} app.jar
 
 # ENTRYPOINT ["java", "-jar", "app.jar"]
-ENTRYPOINT java -jar app.jar -Dspring-boot.run.arguments="--server.port=${DEPLOY_PORT} --message='${MESSAGE}'"
+ENTRYPOINT echo ${DEPLOY_PORT} && echo ${MESSAGE}
+# ENTRYPOINT java -jar app.jar -Dspring-boot.run.arguments="--server.port=${DEPLOY_PORT} --message='${MESSAGE}'"
 
-EXPOSE 8001
-EXPOSE 8002
+EXPOSE ${DEPLOY_PORT}
