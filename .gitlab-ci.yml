@@ -1,7 +1,7 @@
 stages:
-  # - lint
+  - lint
   - build
-  # - test
+  - test
   - build-image
   - deploy
 
@@ -9,10 +9,10 @@ variables:
   IMAGE_NAME: lkslyj2/ops_docker
   CONTRAINER_NAME: docker-proj
     
-# test:
-#   stage: test
-#   script:
-#     - echo "TEST"
+lint:
+  stage: lint
+  script:
+    - echo "LINT"
 
 build:
   stage: build
@@ -37,10 +37,10 @@ build:
       - target/*.jar
     when: on_success
     
-# test:
-#   stage: test
-#   script:
-#     - echo "TEST"
+test:
+  stage: test
+  script:
+    - echo "TEST"
 
 build-image:
   stage: build-image
@@ -61,9 +61,6 @@ build-image:
     - docker login --username $DOCKER_USERNAME --password $DOCKER_PASSWORD
     - docker push $IMAGE_NAME:latest
     - docker images
-  only:
-    - develop
-    - main
 
 deploy-dev:
   stage: deploy
